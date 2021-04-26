@@ -49,8 +49,13 @@ export default new Vuex.Store({
     },
     async GET_COMICS({ commit }, params) {
       let comics = [];
+      let config = {
+        headers: {
+          Accept: '*/*'
+        }
+      }
       axios
-        .get(`https://gateway.marvel.com:443/v1/public/comics?${params}`)
+        .get(`https://gateway.marvel.com:443/v1/public/comics?${params}`, {} , config)
         .then(res => {
           comics = res.data.data.results;
           commit("GET_COMICS", comics);
