@@ -1,4 +1,3 @@
-import axios from "axios";
 import Vue from "vue";
 import Vuex from "vuex";
 
@@ -49,17 +48,23 @@ export default new Vuex.Store({
     },
     async GET_COMICS({ commit }, params) {
       let comics = [];
-      let config = {
-        headers: {
-          Accept: '*/*'
-        }
-      }
-      axios
-        .get(`https://gateway.marvel.com:443/v1/public/comics?${params}`, {} , config)
-        .then(res => {
-          comics = res.data.data.results;
+      let xhr = new XMLHttpRequest();
+      xhr.open(
+        "GET",
+        `https://gateway.marvel.com:443/v1/public/comics?${params}`,
+        true
+      );
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+          if (xhr.status === 200) {
+            console.log(JSON.parse(xhr.responseText));
+            comics = JSON.parse(xhr.responseText).data.results;
+          }
+
           commit("GET_COMICS", comics);
-        });
+        }
+      };
+      xhr.send();
     }
   }
 });
