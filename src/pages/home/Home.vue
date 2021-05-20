@@ -9,6 +9,13 @@
     <modal-comic-detail></modal-comic-detail>
     <loader :loading="loadingComics"></loader>
     <comicList v-if="allComics.length" :comics="getpercentComics"></comicList>
+    <div class="text-center">
+      <v-pagination
+        v-model="cPage"
+        :length="15"
+        :total-visible="7"
+      ></v-pagination>
+    </div>
   </div>
 </template>
 
@@ -25,7 +32,8 @@ export default {
     return {
       comics: [],
       loadingComics: false,
-      listRandoms: []
+      listRandoms: [],
+      page: 1
     };
   },
   computed: {
@@ -38,6 +46,16 @@ export default {
         }
       }
       return this.allComics;
+    },
+    cPage: {
+      get() {
+        return this.page;
+      },
+      set(page) {
+        this.SET_PAGE(page);
+        this.page = page;
+        this.loadComics();
+      }
     }
   },
   mounted() {
@@ -46,7 +64,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["GET_COMICS"]),
+    ...mapActions(["GET_COMICS", "SET_PAGE"]),
     verifyRandom(random) {
       return this.listRandoms.findIndex(item => item === random) == -1;
     },

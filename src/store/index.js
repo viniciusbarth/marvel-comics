@@ -9,11 +9,15 @@ export default new Vuex.Store({
     shoppingCart: [],
     itemsCart: 0,
     openModalComicDetail: null,
-    allComics: []
+    allComics: [],
+    page: 1
   },
   mutations: {
     SET_SELECTED_COMIC(state, payload) {
       state.selectedComic = payload;
+    },
+    SET_PAGE(state, payload) {
+      state.page = payload;
     },
     SET_SHOPPING_CART(state, payload) {
       state.itemsCart++;
@@ -37,6 +41,9 @@ export default new Vuex.Store({
     SET_SELECTED_COMIC({ commit }, comic) {
       commit("SET_SELECTED_COMIC", comic);
     },
+    SET_PAGE({ commit }, page) {
+      commit("SET_PAGE", page);
+    },
     SET_SHOPPING_CART({ commit }, selectedComic) {
       commit("SET_SHOPPING_CART", selectedComic);
     },
@@ -46,12 +53,13 @@ export default new Vuex.Store({
     REMOVE_COMIC_CART({ commit }, selectedComic) {
       commit("REMOVE_COMIC_CART", selectedComic);
     },
-    async GET_COMICS({ commit }, params) {
+    async GET_COMICS({ commit, state }, params) {
       let comics = [];
+      let limit = state.page * 20;
       let xhr = new XMLHttpRequest();
       xhr.open(
         "GET",
-        `https://gateway.marvel.com:443/v1/public/comics?${params}`,
+        `https://gateway.marvel.com:443/v1/public/comics?${params}&limit=${limit}`,
         true
       );
       xhr.onreadystatechange = function() {
